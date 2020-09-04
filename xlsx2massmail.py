@@ -72,6 +72,9 @@ except:
 i=0
 try:
      while True :
+         if emails[i]=="":
+              del emails[i]
+              continue
          print(f"[+] Name = {names[i]} Email = {emails[i]}")
          i=i+1
 except IndexError:
