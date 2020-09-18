@@ -44,25 +44,28 @@ print("""[+] Enter Type Of File You Want To Send :
 [3] Text Files""")
 attach_flag=int(input("[+] Enter Choice : "))
 if attach_flag not in range(0,4):
-     printf("""[-] Option Not Available
+     print("""[-] Option Not Available
      [-] Exiting""")
      sys.exit(-1)
-attachment_to_send=input(str("[+] Enter Path Of File To Be Attached : "))
-#Get Data from xlsx 
+if attach_flag != 0 :
+    attachment_to_send=input(str("[+] Enter Path Of File To Be Attached : "))
+#Get Data from xlsx
 mailsheet=xlrd.open_workbook(full_path)
 sheet=mailsheet.sheet_by_index(0)
-names=list()
+#Change These
+country=list()
 emails=list()
-
+committee=list()
 
 #Fill the lists
-i=1
+i=0
 try:
     while True:
-         names.append(sheet.cell_value(i,2))#Change This
-         emails.append(sheet.cell_value(i,7).lower())#Change This
+         country.append(sheet.cell_value(i,2))#Change This
+         emails.append(sheet.cell_value(i,0).lower())#Change This
+         committee.append(sheet.cell_value(i,1))#Change This
          #Add Fields
-         
+
          i=1+i
 except:
      print("")
@@ -75,7 +78,7 @@ try:
          if emails[i]=="":
               del emails[i]
               continue
-         print(f"[+] Name = {names[i]} Email = {emails[i]}")
+         print(f"[+] Country = {country[i]} Email = {emails[i]} Commitee={committee[i]}") #Change This
          i=i+1
 except IndexError:
      print("")
@@ -96,63 +99,58 @@ try:
          #Setup the MIME
          #Change This Message
          mail_content = """
-Greetings Delegates! 
+Dear Madam/Sir,
 
-It is our distinct pleasure to cordially invite you to the 7th edition of IEM Model United Nations (IEM MUN 2020), which will be held from October 10th to October 11th 2020.
+Greetings from the IEM Model UN 2020 Secretariat.
 
-
-As IEMMUN 2019 was a grandeur, this time we present to you the 7th edition of Model United Nations by IEM and this time we are going International . Yes you heard it right it’s an International MUN.
-
-We are back to create and invite you all to witness grandeur as the Pheonix rises from it’s ashes, the 7th edition of IEMMUN we present to you with a brand new and INTERNATIONAL edition of MUN organised by the Institute of Engineering and Management, Kolkata called the IEMMUN 2020 (#ConcordOfDiscord), in collaboration with the United Nations Information Centre (India and Bhutan) and UN@75 motions, scheduled on this 10th and 11th October via online platform.
-
-Last time with your presence, you helped us make our conference a grand success and again in this present time we would like to have this opportunity of honour to have you back on our stage, showcasing your expertise. Since it’s inception, IEM MUN has offered its delegates an unrivalled and paramount MUN experience by conducting highly-personalised, engaging and dynamic crisis committees. This year, we again look forward to running committees that will cover a wide array of geographical areas, and we are confident that every delegate will be able to find a IEM MUN committee that sparks his or her interest.
+It is with great pleasure that we inform you that your provisional allotment has been confirmed in the {} committee of the IEMMUN 2020
+Allotted Country- {}
 
 
-We are completely aware of the tensed situations around prevailing due to this Covid-19 pandemic, and we assure you that this upcoming event will not only bring in complete but also recreation and belief to strive towards betterment together amidst the distress. 
-We very much look forward for your participation in the most intellectual, stimulating and enjoyable conference, IEM MUN 2020.
-The Phoenix rose from the ashes, the flame that was ignited by the collaborative efforts of every member associated with this MUN and may remain glorious even in the negative situations. 
-
-The committees which we are hosting and their respective agenda along with respective Executive Board are as follows: 
-1.  UNGA DISEC - Reduction of Military Budget : Executive Board are: Aswath Komath and Anurag Sengupta
-2. WHA (World Health Assembly) - Impact of Covid-19 pandemic on the Sustainable Development Goals, with special emphasis on SDG-3 : Executive Board are : Chairperson,Tannistha Sinha and Vice Chairperson, Muksetul Islam Alif
-
-Delegation application link: https://forms.gle/5NnN4gGjSRYTda7T8
-
-Thanking you, 
-Team IEMMUN'20.
- 
-________
+It is to kindly note that only after the successful payment of delegate fee and accommodation fee if opted for, this would be your final allotment and the participation will be confirmed.
 
 
-For more details check our:
+You can view the allotments here:-
 
-FACEBOOK PAGE
-Link: https://www.facebook.com/IEM-MUN-101186998348738
+https://drive.google.com/file/d/1YBOde2vTvsxgfkWsej8C2-PFYLg3Gu08/view?usp=sharing
 
-INSTAGRAM PAGE: 
-@iemmun
+Fee Structure & Payment Procedure for IEM MUN 2020:
 
-WEBSITE
-Link:  iemmun.in
+Registration Fee:
+INR 500 (Indian Single Delegate Member) and INR 900 (Indian Double Delegate Member )
+$12  (Foreign Single Delegate Member)
+$22  (Foreign Double Delegate Member )
 
 
-FOR ANY FURTHER QUERY PLEASE FEEL FREE TO CONTACT
+Country Upgrade Request will be entertained only once the Payment is done. The last date for payment is  31st August, 2020 for provisional first round allotment
 
+
+For payment related queries, write to us at:  officialiemmun@gmail.com   or call us at
+Vikash Gupta
++917980917161
+
+Payments can be done according to above details through Online Payment :
+https://www.explara.com/e/iem-model-united-nations
+Paytm- +919330994191
+PhonePay- +917980917161
+
+For allotment related queries,
+
+write to us at: officialiemmun@gmail.com
+
+or call at us :
 Subhajit Pal
-(Secretary General)
-Phone: +91 8017363909 
-
-
++91 80173 63909
 
 Vikash Gupta
-(Deputy Secretary General)
-Phone: +91 7980917161
++917980917161
 
+Debjeet Baneerjee
++91 91639 80758
 
-Debjeet Banerjee
-( Director General )
-Phone : +91 9163980758
-"""
+Aditya Poddar
++91 94322 80995
+""".format(committee[i],country[i])
          #Set message accordingly
          if receiver_address=="":
               print("""[-] Empty Name List
@@ -162,7 +160,7 @@ Phone : +91 9163980758
          message['From'] = sender_address
          message['To'] = receiver_address
          message['Subject'] = subject_line  #The subject line
-         
+
          #The body and the attachments for the mail
          message.attach(MIMEText(mail_content, 'plain'))
          if attach_flag==1 :
@@ -171,7 +169,7 @@ Phone : +91 9163980758
                     img.add_header('Content-Disposition', 'attachment', filename=attachment_to_send)
                     message.attach(img)
          if attach_flag == 2 :
-             
+
               pdf = MIMEApplication(open(attachment_to_send, 'rb').read())
               pdf.add_header('Content-Disposition','attachment',filename=attachment_to_send)
               message.attach(pdf)
