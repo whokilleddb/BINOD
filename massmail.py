@@ -64,6 +64,31 @@ def askPass(emailid):
 		if (p!=""):
 			return p
 
+def getHeader(cnames):
+	arg=list()
+	i=0
+
+	print(f"\n{CYAN}[+] Enter The Number Corresponding to The Column You'll Need : {NONE}")
+	for col in cnames :
+		print(f"{PURPLE}{i}->{col} ")
+		i=i+1
+	print(f"{YELLOW}[+] Leave Blank To Exit {NONE}")
+
+	while True :
+		try :
+			pos=input(">> ")
+			if (pos==""):
+				break
+			arg.append(cnames[int(pos)])
+		except ValueError as E :
+			print(f"{RED}[-] Error : {E}{NONE}")
+
+	print(f"\n{CYAN}[+] The Selected Arguments Are : {NONE}")
+	for name in arg :
+		print(f"{GREEN}[+] {name}{NONE}")
+
+
+
 
 def parseExcel(excelfile):
 
@@ -75,6 +100,7 @@ def parseExcel(excelfile):
 		sys.exit(-3)
 	df.dropna(how='all', axis=1, inplace=True)
 	print(df)
+	getHeader(list(df.columns.values))
 
 
 def main():
