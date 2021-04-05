@@ -68,9 +68,9 @@ def getHeader(cnames):
 	arg=list()
 	i=0
 
-	print(f"\n{CYAN}[+] Enter The Number Corresponding to The Column You'll Need : {NONE}")
+	print(f"\n{PURPLE}[+] Enter The Number Corresponding to The Column You'll Need : {NONE}")
 	for col in cnames :
-		print(f"{PURPLE}{i}->{col} ")
+		print(f"{CYAN}{i}->{col} ")
 		i=i+1
 	print(f"{YELLOW}[+] Leave Blank To Exit {NONE}")
 
@@ -86,21 +86,59 @@ def getHeader(cnames):
 	print(f"\n{CYAN}[+] The Selected Arguments Are : {NONE}")
 	for name in arg :
 		print(f"{GREEN}[+] {name}{NONE}")
-
-
-
+	return arg
 
 def parseExcel(excelfile):
 
 	data=dict()
+	headerlist=list()
 	try :
 		df = pd.read_excel(excelfile,sheet_name=0)
 	except Exception as e :
 		print("[+] Error : ",e)
 		sys.exit(-3)
 	df.dropna(how='all', axis=1, inplace=True)
-	print(df)
-	getHeader(list(df.columns.values))
+	return df
+
+def formatMessage(mess, headerlist) :
+	formatlist=list()
+	i=0
+	print(f"\n{PURPLE}[+] Your Message : \n{CYAN}{mess}{NONE}")
+	if len(headerlist) != 0 :
+		print(f"\n{YELLOW}[+] Available Headers : {NONE}")
+		for header in headerlist : 
+			print(f"{PURPLE}{i}->{header}{NONE}") 
+			i=i+1
+		print(f"\n{CYAN}[+] Enter The Indexes In The Order You Want Them To Be In The Message :{NONE}")
+		
+		for i in range(len(headerlist)) :
+			try :
+				pos=int(input(f"-> "))
+				formatlist.append(headerlist[pos])
+			except ValueError :
+				print(f"{RED}[+] Value Error{NONE}")
+				sys.exit(-1)
+			except IndexError as e :
+				print(f"{RED}[+] Error : \n{e}{NONE}")
+				sys.exit(-2)
+		
+		print(f"\n{CYAN}[+] The Order Of Headers As Selected :{NONE}")
+		for i in range(len(formatlist)) :
+			print(f"{YELLOW}[{i}]> {formatlist[i]}{NONE}")
+
+	return formatlist
+
+def showtable(df,headerlist):
+	headerstouse=dict()
+	for header in headerlist:
+		headerstouse[header]=df[header].tolist()
+	table=tabulate(headerstouse,headers="keys",tablefmt="pretty")
+	print(f"\n{PURPLE}[+] Data To Send : {NONE}")
+	print(f"{CYAN}{table}{NONE}")
+	return headerstouse
+
+def selectEmailColumn(headers) :
+	print()
 
 
 def main():
@@ -112,10 +150,13 @@ def main():
 	args = parser.parse_args()
 	message=readMessage(args.m)
 	passwd=askPass(args.e)
-
 	showBanner(args.e,args.s,args.sl,args.m)
-	parseExcel(args.s)
-
+	df=parseExcel(args.s)
+	print(f"{PURPLE}[+] Parsed Data : \n{CYAN}{df}{NONE}")
+	headerlist=getHeader(list(df.columns.values))
+	orderedlist=formatMessage(message,headerlist)
+	showtable(df,orderedlist)
+#	sendmail(args.e,passwd,args.s,args.sl,message,df,orderedlist)
 
 if __name__ == '__main__':
 	main()
