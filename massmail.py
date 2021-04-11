@@ -240,9 +240,8 @@ def main():
 	headerlist=getHeader(list(df.columns.values))
 	orderedlist=orderList(message,headerlist)
 	showtable(df,orderedlist)
-	input()
 	index=selectEmailColumn(list(df.columns.values))
-	#clear()
+	clear()
 	showBanner(args.e,args.s,args.sl,args.m)
 	sendmail(args.e,passwd,args.s,args.sl,message,df,orderedlist,index)
 
