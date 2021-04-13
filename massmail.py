@@ -197,12 +197,12 @@ def genmessage(message, elementlist):
 
 
 def sendmail(email, passwd, excel, subject, mess, df, orderedlist, index) :
-	message = MIMEMultipart()
-	message['From'] = email 
-	message['Subject'] = subject
 	emailids = list(df[list(df.columns.values)[index]])
 	
 	for i in range(len(emailids)) :
+        message = MIMEMultipart()
+        message['From'] = email 
+        message['Subject'] = subject
 		print(f"{YELLOW}[+] Sending Email To : {emailids[i]}{NONE}")
 		message['To']=emailids[i]
 		valuelist=list()
